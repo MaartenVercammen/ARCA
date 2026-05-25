@@ -1,13 +1,13 @@
 FROM node:lts-slim AS build
-RUN npm install -g @angular/cli
 
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN corepack enable && yarn install --frozen-lockfile
 
 COPY . ./
-RUN ng build --configuration=production
+RUN yarn build
 
-FROM nginx:stable AS final
+FROM nginx:stable-alpine AS final
 EXPOSE 80
-COPY --from=build dist/ARCA-fe/browser  /usr/share/nginx/html
+COPY --from=build /app/dist/ARCA-fe/browser /usr/share/nginx/html
