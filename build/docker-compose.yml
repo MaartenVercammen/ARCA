@@ -1,0 +1,77 @@
+services:
+  web:
+    build:
+      context: ../frontend/ARCA-fe
+      dockerfile: Dockerfile
+    image: arca-web:latest
+    container_name: arca-web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - midtier
+    restart: unless-stopped
+
+  midtier:
+    build:
+      context: ../midtier/ACRA-mt
+      dockerfile: Dockerfile
+    image: arca-midtier:latest
+    container_name: arca-midtier
+    ports:
+      - "${MIDTIER_PORT:-8081}:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_DDL_AUTO:-update}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:17-alpine
+    container_name: arca-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  proxy:
+    image: 'jc21/nginx-proxy-manager:2.10.3'
+    restart: unless-stopped
+    ports:
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+      # Add any other Stream port you want to expose
+      # - '21:21' # FTP
+    environment:
+      # Postgres parameters:
+      DB_POSTGRES_HOST: 'db'
+      DB_POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      DB_POSTGRES_USER: ${POSTGRES_USER}
+      DB_POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+      DB_POSTGRES_NAME: ${POSTGRES_DB}
+      # Uncomment this if IPv6 is not enabled on your host
+      # DISABLE_IPV6: 'true'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
