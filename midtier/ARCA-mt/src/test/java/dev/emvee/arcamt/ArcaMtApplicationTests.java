@@ -1,10 +1,10 @@
-package dev.emvee.acramt;
+package dev.emvee.arcamt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AcraMtApplicationTests {
+class ArcaMtApplicationTests {
 
     @Test
     void contextLoads() {

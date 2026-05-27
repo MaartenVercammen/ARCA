@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.emvee</groupId>
-    <artifactId>ACRA-mt</artifactId>
+    <artifactId>ARCA-mt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>ACRA-mt</name>
     <description>ACRA-mt</description>

@@ -1,4 +1,4 @@
-package dev.emvee.acramt.controller;
+package dev.emvee.arcamt.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
