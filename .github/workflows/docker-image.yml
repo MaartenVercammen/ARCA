@@ -27,13 +27,15 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v7
         with:
-          context: "./frontend/ARCA-fe"
+          file: "./frontend/ARCA-fe/Dockerfile"
+          context: "{{defaultContext}}:frontend:ARCA-fe"
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/arca-web:latest
 
       - name: Build and push midtier
         uses: docker/build-push-action@v7
         with:
-          context: "./midtier/ARCA-mt"
+          file: "./midtier/ARCA-mt/Dockerfile"
+          context: "{{defaultContext}}:midtier:ARCA-mt"
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/arca-midtier:latest
