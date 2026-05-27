@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image frontend
+      run: docker build . --file frontend/ARCA-fe/Dockerfile --tag emvee/arca-web:latest --push
+      
+    - uses: actions/checkout@v4
+    - name: Build the Docker image midtier
+      run: docker build . --file midtier/ARCA-mt/Dockerfile --tag emvee/arca-midtier:latest --push
