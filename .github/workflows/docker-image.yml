@@ -18,6 +18,9 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v4
       -
@@ -28,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           file: "./frontend/ARCA-fe/Dockerfile"
-          context: "{{defaultContext}}:frontend:ARCA-fe"
+          context: "./frontend/ARCA-fe"
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/arca-web:latest
 
@@ -36,6 +39,6 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           file: "./midtier/ARCA-mt/Dockerfile"
-          context: "{{defaultContext}}:midtier:ARCA-mt"
+          context: "./midtier/ARCA-mt"
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/arca-midtier:latest
