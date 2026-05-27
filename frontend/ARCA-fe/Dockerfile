@@ -3,7 +3,7 @@ FROM node:lts-slim AS build
 WORKDIR /app
 
 COPY package.json yarn.lock ./
-RUN corepack enable && yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile
 
 COPY . ./
 RUN yarn build
@@ -11,3 +11,4 @@ RUN yarn build
 FROM nginx:stable-alpine AS final
 EXPOSE 80
 COPY --from=build /app/dist/ARCA-fe/browser /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]
