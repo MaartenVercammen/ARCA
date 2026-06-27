@@ -1,0 +1,15 @@
+{
+  "name": "arca-e2e",
+  "version": "1.0.0",
+  "description": "End-to-end tests for ARCA",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@playwright/test": "^1.44.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
