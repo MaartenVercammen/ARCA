@@ -12,6 +12,9 @@
         <module name="ARCA-mt" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ACRA-mt" target="25" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

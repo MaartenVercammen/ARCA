@@ -2,3 +2,7 @@
 
 .junie
 **/.vscode
+
+/e2e/screenshots/
+/.idea/
+/e2e/node_modules/
