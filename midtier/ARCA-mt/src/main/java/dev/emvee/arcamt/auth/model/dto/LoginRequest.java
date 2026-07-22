@@ -1,4 +1,4 @@
-package dev.emvee.arcamt.auth.model;
+package dev.emvee.arcamt.auth.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

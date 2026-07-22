@@ -1,12 +1,10 @@
 package dev.emvee.arcamt.auth.controller;
 
-import dev.emvee.arcamt.auth.model.LoginRequest;
+import dev.emvee.arcamt.auth.model.dto.LoginRequest;
+import dev.emvee.arcamt.auth.model.dto.UserDto;
 import dev.emvee.arcamt.auth.service.AuthenticationService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,15 +19,18 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response) {
-        String token = authenticationService.login(loginRequest);
-        response.addCookie(new Cookie("token", token));
-        return ResponseEntity.ok("Logged in");
+    public ResponseEntity<UserDto> login(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
     @PostMapping("/signup")
     public String signup(@RequestBody @Valid LoginRequest loginRequest) {
        return authenticationService.signup(loginRequest) + " has been created";
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<UserDto> refreshToken(@RequestBody String refreshToken) {
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
     }
 
 }

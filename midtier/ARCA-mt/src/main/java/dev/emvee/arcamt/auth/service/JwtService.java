@@ -1,10 +1,10 @@
 package dev.emvee.arcamt.auth.service;
 
+import dev.emvee.arcamt.auth.repository.model.Role;
 import dev.emvee.arcamt.auth.repository.model.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +37,26 @@ public class JwtService {
     }
 
     public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getRoles().stream()
+                .map(Role::name)
+                .collect(Collectors.toList()));
+        
         return Jwts.builder()
+                .claims(claims)
                 .subject(user.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key, Jwts.SIG.HS512)
                 .compact();
+    }
+
+    public String getUsernameFromJwtToken(String token) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+    }
+
+    public List<String> getRolesFromJwtToken(String token) {
+        return (List<String>) Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get("roles");
     }
 
     public boolean validateJwtToken(String token) {
