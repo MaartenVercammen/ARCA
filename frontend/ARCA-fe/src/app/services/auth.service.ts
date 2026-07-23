@@ -100,4 +100,10 @@ export class AuthService {
     if (!claims || !claims.roles) return false;
     return claims.roles.includes(role);
   }
+
+  public getName(): string | null {
+    const claims = this.getClaims();
+    if (!claims || !claims.sub) return null;
+    return claims.sub;
+  }
 }

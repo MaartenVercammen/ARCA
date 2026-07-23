@@ -1,0 +1,24 @@
+$text_size_extra_small: 11px;
+$text_size_small: 13px;
+$text_size_default: 15px;
+$text_size_large: 18px;
+$text_size_2x_large: 22px;
+$text_size_3x_large: 28px;
+$text_size_4x_large: 36px;
+$text_size_5x_large: 48px;
+
+$text_weight_default: 400;
+$text_weight_medium: 500;
+$text_weight_semibold: 600;
+$text_weight_bold: 700;
+$text_weight_extra_bold: 800;
+
+$line_height_small: 1.25;
+$line_height_default: 1.5;
+$line_height_heading: 1.25;
+
+
+@function space($size: 1) {
+  @return $size * 1rem;
+}
+
