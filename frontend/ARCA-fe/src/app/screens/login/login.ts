@@ -1,4 +1,4 @@
-import {Component, effect, inject} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
 @Component({
   selector: 'app-login',
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -20,14 +20,13 @@ export class Login {
     this.loginService.logout()
   }
 
-  public form = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(12)])
-  });
-
-  public login(): void {
-    const username = this.form.get('username')?.value;
-    const password = this.form.get('password')?.value;
+  public login(data: Partial<{
+  email: string | null;
+  password: string | null;
+}>): void {
+    const username = data.email;
+    const password = data.password;
+    console.log(username, password);
     if (username && password) {
       this.loginService.login(username, password)
         .catch((error) => {
