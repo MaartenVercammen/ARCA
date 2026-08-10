@@ -1,0 +1,12 @@
+default:
+  parallel: 1
+  format:
+    - summary
+    - progress-bar
+  paths:
+    - ../features/login/e2e/*.feature
+  requireModule:
+    - ts-node/register
+  require:
+    - step-definitions/**/*.ts
+    - support/**/*.ts

@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/midtier/ACRA-mt/pom.xml" />
+        <option value="$PROJECT_DIR$/midtier/ARCA-mt/pom.xml" />
       </list>
     </option>
   </component>
