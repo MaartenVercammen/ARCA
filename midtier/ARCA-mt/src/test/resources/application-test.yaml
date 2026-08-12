@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ARCA-mt
+
+  datasource:
+    url: jdbc:h2:file:./db;AUTO_SERVER=TRUE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+    database-platform: org.hibernate.dialect.H2Dialect
+    h2:
+      console:
+        enabled: true
+  # Hibernate Configuration
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  secret: wonle08j7dn9a3ro0ddzu3p1nmio2d9x5bdfuopveyrgq4uhkavjss1188u2aqxe5v2v5cq3ipje6cpqngfsl4t2fc2l634dqnaekgcbhaael423v77en38tg5w158q4fgdxn70f0wc90lzf20aix75ggnyxj7h423x8pwywmjwm8caucmoxqqi65hpj8f1no3ti1a7vbq09y82rwocdkt1oq1wcuqb32i2cpy13wn5ci9terhohrf0au6kronhmtdquupye3amhdex7dw78r7o7h5vj0wnusq3la3ucco3xkvj3z05453lfnkd0uoo0o9391iabq2niyfqeiiog0jxko5cf73qetz5scvuph9ekoxnz1od6wmfi25sewygqkzog15499wthgbn8vs4bld0g815r38txugqbfd1jd6wqbn97kp2dsh4nasxlopcptj4y2103cjmvuzhynsni7ndoy0xv8llydpen1chsg4hb4ncuk6hkt9pa7ezqsnan
+  expiration: 3600000
+  refreshExpiration: 86400000

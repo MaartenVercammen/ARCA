@@ -1,6 +1,6 @@
-package dev.emvee.arcamt.auth.repository;
+package dev.emvee.arcamt.usermanagement.repository;
 
-import dev.emvee.arcamt.auth.repository.model.User;
+import dev.emvee.arcamt.usermanagement.repository.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
