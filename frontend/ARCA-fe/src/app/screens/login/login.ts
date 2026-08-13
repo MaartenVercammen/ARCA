@@ -54,4 +54,17 @@ export class Login {
   constructor() {
     this.loginService.logout()
   }
+
+  protected hasActiveRefreshToken(): boolean {
+    return this.loginService.getRefreshToken() != null
+  }
+
+  protected refreshToken() {
+    void this.loginService.refreshToken()
+      .catch((error) => {
+      console.log('error')
+      throw error
+    })
+      .then(() => void this._router.navigate(['/home']));
+  }
 }

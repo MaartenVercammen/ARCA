@@ -85,7 +85,6 @@ export class AuthService {
   public logout(): void {
     this._user.set(undefined);
     sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");
   }
 
   public getClaims(): any {
@@ -105,5 +104,9 @@ export class AuthService {
     const claims = this.getClaims();
     if (!claims || !claims.sub) return null;
     return claims.sub;
+  }
+
+  public getRefreshToken(): string | null {
+    return sessionStorage.getItem("refreshToken");
   }
 }
