@@ -22,4 +22,8 @@
       <module name="ARCA-mt" options="-parameters" />
     </option>
   </component>
+  <component name="TypeScriptCompiler">
+    <option name="memoryLimit" value="4096" />
+    <option name="recompileOnChanges" value="true" />
+  </component>
 </project>

@@ -1,15 +1,19 @@
-import {Component, computed, inject, OnInit, signal} from '@angular/core';
-import {User, UserManagementService} from '../../services/user-management.service';
-import {BehaviorSubject} from 'rxjs';
+import {Component, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
   MatTable
 } from '@angular/material/table';
+import {ApiConnector} from '../../shared/connector/api.connector';
+import {User} from '../../interfaces/user-management.interface';
 
 @Component({
   selector: 'app-user-management',
@@ -28,26 +32,13 @@ import {
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
-export class UserManagement implements OnInit{
+export class UserManagement {
 
-  private _userManagementService = inject(UserManagementService)
+  private _api = inject(ApiConnector)
 
-  public users = computed(() => this._userManagementService.users())
+  public users = toSignal(this._api.get<User[]>('/users'), {initialValue: []});
 
-  public emptyState = signal(true)
   protected displayedColumns: string[] = ['username']
 
-  public ngOnInit(): void {
-    this._userManagementService.fetchUsers().then((loaded) =>
-      {
-        if(!loaded){
-          this.emptyState.set(true)
-        }
-        else{
-          this.emptyState.set(false)
-        }
-      }
-    );
-  }
 
 }

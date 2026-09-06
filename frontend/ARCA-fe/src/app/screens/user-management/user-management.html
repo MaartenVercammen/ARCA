@@ -1,5 +1,5 @@
 <p>user-management works!</p>
-@if (emptyState()) {
+@if (users().length === 0) {
   <h1>Empty State</h1>
 } @else {
   <table mat-table [dataSource]="users()" class="mat-shadow-2">
