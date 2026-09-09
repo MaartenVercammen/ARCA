@@ -1,0 +1,14 @@
+<div [class]="'container ' + data.type" [style.--duration]="durationStyle" role="alert" aria-live="assertive">
+  <div class="container-info">
+    <mat-icon [class]="'icon ' + data.type">{{ icon }}</mat-icon>
+    <p [class]="data.type + ' message'">{{ title }}</p>
+  </div>
+  <div class="container-button">
+    <button class="button" matIconButton type="button" aria-label="Close notification" (click)="onClose()">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+  @if (data.duration) {
+    <div class="duration-bar" aria-hidden="true"></div>
+  }
+</div>

@@ -1,0 +1,65 @@
+.container {
+  --duration: 0ms;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100%, 32rem);
+  min-height: 3.5rem;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  box-shadow: var(--mat-sys-level3);
+
+  &.error {
+    color: var(--mat-sys-on-error-container);
+    background-color: var(--mat-sys-error-container);
+  }
+
+  &.info {
+    color: var(--mat-sys-on-primary-container);
+    background-color: var(--mat-sys-primary-container);
+  }
+
+  &.success {
+    color: #1b5e20;
+    background-color: #a5d6a7;
+  }
+
+  &.warning {
+    color: #5d4037;
+    background-color: #ffcc80;
+  }
+}
+
+.duration-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0.2rem;
+  transform-origin: left;
+  background-color: currentColor;
+  animation: duration-progress var(--duration) linear forwards;
+}
+
+@keyframes duration-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.container-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  flex-shrink: 0;
+}
