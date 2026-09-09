@@ -1,5 +1,6 @@
 package dev.emvee.arcamt.auth.repository.model;
 
+import dev.emvee.arcamt.usermanagement.repository.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

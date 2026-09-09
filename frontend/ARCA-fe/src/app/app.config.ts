@@ -1,11 +1,10 @@
-import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
-import {
-  ApplicationConfig,
-  provideBrowserGlobalErrorListeners,
-} from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {MAT_ICON_DEFAULT_OPTIONS} from '@angular/material/icon';
+import {ApplicationConfig, provideBrowserGlobalErrorListeners,} from '@angular/core';
+import {provideRouter} from '@angular/router';
 
-import { routes } from './app.routes';
+import {routes} from './app.routes';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {AuthInterceptor} from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +16,7 @@ export const appConfig: ApplicationConfig = {
         fontSet: 'material-symbols-outlined',
       },
     },
+    provideHttpClient(withInterceptorsFromDi()),
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
 };

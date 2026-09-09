@@ -1,4 +1,4 @@
-package dev.emvee.arcamt.auth.repository.model;
+package dev.emvee.arcamt.usermanagement.repository.model;
 
 public enum Role {
     ROLE_USER,

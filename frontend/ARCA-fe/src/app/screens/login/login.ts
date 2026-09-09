@@ -1,5 +1,5 @@
-import {Component, effect, inject, signal} from '@angular/core';
-import {AuthService} from '../../services/auth.service';
+import {Component, inject} from '@angular/core';
+import {AuthService} from '../../services/auth/auth.service';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
@@ -28,7 +28,7 @@ import {NgOptimizedImage} from '@angular/common';
 })
 export class Login {
 
-  private loginService = inject(AuthService);
+  protected loginService = inject(AuthService);
   private _router = inject(Router);
   form = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.min(8)]),
@@ -38,20 +38,29 @@ export class Login {
     ]),
   });
 
-  onSubmit() {
-    if (this.form.valid) {
-      const username = this.form.value.username;
-      const password = this.form.value.password;
-      this.loginService.login(username!, password!)
-        .catch((error) => {
-          console.log('error')
-          throw error
-        })
-        .then(() => void this._router.navigate(['/home']));
+  async onSubmit(): Promise<void> {
+    if (!this.form.valid) return;
+
+    const username = this.form.value.username;
+    const password = this.form.value.password;
+    const success = await this.loginService.login(username!, password!);
+
+    if (success) {
+      await this._router.navigate(['/home']);
     }
   }
 
   constructor() {
     this.loginService.logout()
+  }
+
+  protected hasActiveRefreshToken(): boolean {
+    return this.loginService.getRefreshToken() != null
+  }
+
+  protected async refreshToken(): Promise<void> {
+    if (await this.loginService.refreshToken()) {
+      await this._router.navigate(['/home']);
+    }
   }
 }

@@ -1,4 +1,4 @@
-package dev.emvee.arcamt.auth.repository.model;
+package dev.emvee.arcamt.usermanagement.repository.model;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
