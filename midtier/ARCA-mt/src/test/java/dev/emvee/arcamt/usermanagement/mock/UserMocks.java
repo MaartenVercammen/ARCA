@@ -13,19 +13,17 @@ import java.util.Set;
 public class UserMocks {
 
     public static List<UserDto> usersDto = List.of(
-            new UserDto("Username1", Set.of(Role.ROLE_USER)),
-            new UserDto("Username2", Set.of(Role.ROLE_USER)),
-            new UserDto("Username3", Set.of(Role.ROLE_USER))
+            UserDto.builder().username("Username1").roles(Set.of(Role.ROLE_USER)).build(),
+            UserDto.builder().username("Username2").roles(Set.of(Role.ROLE_USER)).build(),
+            UserDto.builder().username("Username3").roles(Set.of(Role.ROLE_USER)).build()
     );
 
     public static List<UserDto> emptyUsersDto = List.of();
 
     public static List<User> databaseUsers = List.of(
-            new User(1L, "Username1", Set.of(Role.ROLE_USER)),
-            new User(2L, "Username2", Set.of(Role.ROLE_USER)),
-            new User(3L, "Username3", Set.of(Role.ROLE_USER))
+            User.builder().id(1L).username("Username1").roles(Set.of(Role.ROLE_USER)).build(),
+            User.builder().id(2L).username("Username2").roles(Set.of(Role.ROLE_USER)).build(),
+            User.builder().id(3L).username("Username3").roles(Set.of(Role.ROLE_USER)).build()
     );
-
-
 
 }

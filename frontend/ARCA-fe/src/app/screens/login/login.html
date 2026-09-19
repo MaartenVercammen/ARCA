@@ -26,13 +26,6 @@
                 </mat-error
                 >
               }
-              @if ((form.get('username')?.touched || form.get('username')?.dirty) &&
-              form.get('username')?.hasError('minlength')) {
-                <mat-error>
-                  <mat-icon class="form-field-error-icon">error</mat-icon>
-                  Username must be at least 8 characters
-                </mat-error>
-              }
             </mat-form-field>
             <mat-form-field class="full-width">
               <mat-label>Password</mat-label>

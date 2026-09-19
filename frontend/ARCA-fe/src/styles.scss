@@ -6,7 +6,8 @@
 @use '@angular/material' as mat;
 
 html {
-  height: 100%;
+  display: inline-block;
+  height: stretch;
   @include mat.theme(
     (
       color: (
@@ -34,7 +35,7 @@ body {
 
   // Reset the user agent margin.
   margin: 0;
-  height: 100%;
+  height: stretch;
 }
 
 .system-message-panel {
