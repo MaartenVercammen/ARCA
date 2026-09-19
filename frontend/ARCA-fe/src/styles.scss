@@ -52,3 +52,7 @@ body {
   background-color: transparent;
   box-shadow: none;
 }
+
+.fullscreen-overlay-backdrop {
+  backdrop-filter: brightness(80%);
+}

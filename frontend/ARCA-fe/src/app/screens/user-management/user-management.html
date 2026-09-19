@@ -1,5 +1,8 @@
 <div class="container">
   <h2>Users</h2>
+  <div>
+    <button matButton="filled" (click)="openAddUserSlideIn()">Add user</button>
+  </div>
   @if (users().length === 0) {
     <app-empty-state (retry)="retryFetch()"></app-empty-state>
   } @else {
