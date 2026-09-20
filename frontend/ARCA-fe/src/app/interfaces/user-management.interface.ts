@@ -1,8 +1,9 @@
 export type User = {
+  id: number;
   username: string;
   email: string;
   phoneNumber: string;
-  address: Address;
+  address: Address | null;
   roles: string[];
 };
 

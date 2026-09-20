@@ -5,6 +5,7 @@ import dev.emvee.arcamt.auth.repository.model.LoginInfo;
 import dev.emvee.arcamt.auth.service.HashService;
 import dev.emvee.arcamt.usermanagement.dto.AddressDto;
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.mock.UserMocks;
 import dev.emvee.arcamt.usermanagement.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,5 +104,30 @@ class UserManagementServiceTest {
         assertThat(userCaptor.getValue().getUsername()).isEqualTo("newuser");
         assertThat(userCaptor.getValue().getEmail()).isEqualTo("test@example.com");
         assertThat(userCaptor.getValue().getAddress().getId()).isNull();
+    }
+
+    @Test
+    @DisplayName("UpdateUser updates profile and login name without changing password or roles")
+    void UpdateUser_UpdatesProfileAndLoginName_PreservesPasswordAndRoles() {
+        User user = User.builder().id(42L).username("olduser").email("old@example.com")
+                .roles(Set.of(Role.ROLE_ADMIN)).build();
+        LoginInfo loginInfo = new LoginInfo("olduser", "stored-password");
+        loginInfo.setId(42L);
+        UpdateUserRequest request = UpdateUserRequest.builder()
+                .username("updateduser").email("new@example.com").phoneNumber("555")
+                .address(AddressDto.builder().street("New St").city("City").build()).build();
+        when(userRepository.findById(42L)).thenReturn(Optional.of(user));
+        when(loginRepository.findById(42L)).thenReturn(Optional.of(loginInfo));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(loginRepository.save(any(LoginInfo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userManagementService.updateUser(42L, request);
+
+        assertThat(result.id()).isEqualTo(42L);
+        assertThat(result.username()).isEqualTo("updateduser");
+        assertThat(result.address().street()).isEqualTo("New St");
+        assertThat(loginInfo.getUsername()).isEqualTo("updateduser");
+        assertThat(loginInfo.getPassword()).isEqualTo("stored-password");
+        assertThat(user.getRoles()).containsExactly(Role.ROLE_ADMIN);
     }
 }

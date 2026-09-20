@@ -3,7 +3,14 @@
   <div>
     <button matButton="filled" (click)="openAddUserSlideIn()">Add user</button>
   </div>
-  @if (users().length === 0) {
+  @if (isLoading()) {
+    <p role="status">Loading users...</p>
+  } @else if (hasError()) {
+    <div role="alert">
+      <p>Unable to load users.</p>
+      <button matButton type="button" (click)="retryFetch()">Try again</button>
+    </div>
+  } @else if (users().length === 0) {
     <app-empty-state (retry)="retryFetch()"></app-empty-state>
   } @else {
     <table mat-table [dataSource]="users()" class="mat-shadow-2">
@@ -22,6 +29,12 @@
       <ng-container matColumnDef="address">
         <th mat-header-cell *matHeaderCellDef> Address</th>
         <td mat-cell *matCellDef="let element"> {{ element.address | address }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button matButton type="button" (click)="openEditUserSlideIn(element)">Edit</button>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

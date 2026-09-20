@@ -1,5 +1,5 @@
-<app-slide-in-base title="Add user">
-  <form id="add-user-form" (submit)="onSubmit()" class="user-form">
+<app-slide-in-base [title]="selectedUser() ? 'Edit user' : 'Add user'">
+  <form id="add-user-form" (submit)="onSubmit($event)" class="user-form">
     <mat-form-field>
       <mat-label>Username</mat-label>
       <input matInput type="text" autocomplete="username" [formField]="form.username"/>
@@ -8,16 +8,18 @@
       }
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Password</mat-label>
-      <input matInput type="password" autocomplete="new-password" [formField]="form.password"/>
-      @if (isVisible(form.password) && hasError(form.password, 'required')) {
-        <mat-error>Password is required</mat-error>
-      }
-      @if (isVisible(form.password) && hasError(form.password, 'minLength')) {
-        <mat-error>Password must be at least 8 characters</mat-error>
-      }
-    </mat-form-field>
+    @if (!selectedUser()) {
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" autocomplete="new-password" [formField]="form.password"/>
+        @if (isVisible(form.password) && hasError(form.password, 'required')) {
+          <mat-error>Password is required</mat-error>
+        }
+        @if (isVisible(form.password) && hasError(form.password, 'minLength')) {
+          <mat-error>Password must be at least 8 characters</mat-error>
+        }
+      </mat-form-field>
+    }
 
     <mat-form-field>
       <mat-label>Email</mat-label>
@@ -56,7 +58,7 @@
   <div slideInFooter class="form-actions">
     <button matButton type="button" (click)="onClose()">Cancel</button>
     <button matButton="filled" type="submit" form="add-user-form" [disabled]="form().invalid() || isSubmitting()">
-      {{ isSubmitting() ? 'Creating...' : 'Create' }}
+      {{ isSubmitting() ? (selectedUser() ? 'Updating...' : 'Creating...') : (selectedUser() ? 'Update' : 'Create') }}
     </button>
   </div>
 </app-slide-in-base>

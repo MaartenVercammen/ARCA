@@ -1,8 +1,9 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { SlideInBaseComponent } from '../../../../components/slide-in-base.component/slide-in-base.component';
+import { User } from '../../../../interfaces/user-management.interface';
 import { ApiConnector } from '../../../../shared/connector/api.connector';
 import { SlideInControllerService } from '../../../../services/slide-in-controller/slide-in-controller.service';
 
@@ -17,6 +18,7 @@ export class AddUserSlideIn extends SlideInBaseComponent {
   private _addUserSlideInController = inject(SlideInControllerService);
   public readonly isSubmitting = signal(false);
   public readonly created = output<void>();
+  public readonly selectedUser = input<User | null>(null);
 
   readonly model = signal({
     username: '',
@@ -38,6 +40,27 @@ export class AddUserSlideIn extends SlideInBaseComponent {
     minLength(path.password, 8);
   });
 
+  constructor() {
+    super();
+    effect(() => {
+      const user = this.selectedUser();
+      if (!user) return;
+      this.model.set({
+        username: user.username,
+        password: 'preserved-password',
+        email: user.email ?? '',
+        phoneNumber: user.phoneNumber ?? '',
+        address: {
+          street: user.address?.street ?? '',
+          houseNumber: user.address?.houseNumber ?? '',
+          city: user.address?.city ?? '',
+          zipCode: user.address?.zipCode ?? '',
+          country: user.address?.country ?? '',
+        },
+      });
+    });
+  }
+
   protected isVisible(field: { (): { touched(): boolean; dirty(): boolean } }): boolean {
     const state = field();
     return state.touched() || state.dirty();
@@ -52,7 +75,8 @@ export class AddUserSlideIn extends SlideInBaseComponent {
       .some((error) => error.kind === kind);
   }
 
-  protected onSubmit(): void {
+  protected onSubmit(event: SubmitEvent): void {
+    event.preventDefault();
     if (this.isSubmitting()) return;
     if (this.form().invalid()) {
       this.form.username().markAsTouched();
@@ -67,13 +91,17 @@ export class AddUserSlideIn extends SlideInBaseComponent {
     );
     const payload = {
       username,
-      password,
+      ...(this.selectedUser() ? {} : { password }),
       ...(email ? { email } : {}),
       ...(phoneNumber ? { phoneNumber } : {}),
       ...(Object.keys(optionalAddress).length > 0 ? { address: optionalAddress } : {}),
     };
 
-    this._api.post('/users', payload).subscribe({
+    const request = this.selectedUser()
+      ? this._api.put(`/users/${this.selectedUser()!.id}`, payload)
+      : this._api.post('/users', payload);
+
+    request.subscribe({
       next: () => {
         this.created.emit();
         this._addUserSlideInController.notifySlideInSuccess();

@@ -13,9 +13,9 @@ import java.util.Set;
 public class UserMocks {
 
     public static List<UserDto> usersDto = List.of(
-            UserDto.builder().username("Username1").roles(Set.of(Role.ROLE_USER)).build(),
-            UserDto.builder().username("Username2").roles(Set.of(Role.ROLE_USER)).build(),
-            UserDto.builder().username("Username3").roles(Set.of(Role.ROLE_USER)).build()
+            UserDto.builder().id(1L).username("Username1").roles(Set.of(Role.ROLE_USER)).build(),
+            UserDto.builder().id(2L).username("Username2").roles(Set.of(Role.ROLE_USER)).build(),
+            UserDto.builder().id(3L).username("Username3").roles(Set.of(Role.ROLE_USER)).build()
     );
 
     public static List<UserDto> emptyUsersDto = List.of();

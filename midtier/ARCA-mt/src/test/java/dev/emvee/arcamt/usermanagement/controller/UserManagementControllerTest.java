@@ -2,6 +2,7 @@ package dev.emvee.arcamt.usermanagement.controller;
 
 import dev.emvee.arcamt.core.security.JwtAuthenticationFilter;
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.mock.UserMocks;
 import dev.emvee.arcamt.usermanagement.repository.model.Role;
@@ -36,6 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -162,6 +164,33 @@ class UserManagementControllerTest {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("Update user returns 200 OK for ADMIN")
+    void updateUser_AdminUser_Returns_Ok() throws Exception {
+        UserDto updated = UserDto.builder().id(1L).username("updatedUser").build();
+        when(userManagementService.updateUser(any(Long.class), any(UpdateUserRequest.class))).thenReturn(updated);
+
+        mockMvc.perform(put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"updatedUser","email":"updated@example.com"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.username", is("updatedUser")));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("Update user returns 403 Forbidden for USER role")
+    void updateUser_NonAdminUser_Returns_Forbidden() throws Exception {
+        mockMvc.perform(put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"updatedUser\"}"))
                 .andExpect(status().isForbidden());
     }
 

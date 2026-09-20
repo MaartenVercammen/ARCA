@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddUserSlideIn } from './add-user-slide-in';
 import { SlideInControllerService } from '../../../../services/slide-in-controller/slide-in-controller.service';
+import { User } from '../../../../interfaces/user-management.interface';
 
 describe('AddUserSlideIn', () => {
   let component: AddUserSlideIn;
@@ -45,11 +46,14 @@ describe('AddUserSlideIn', () => {
 
   it('should show required and minimum password validation errors', () => {
     const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
-    form.dispatchEvent(new Event('submit'));
+    const submitEvent = new Event('submit', { cancelable: true });
+    form.dispatchEvent(submitEvent);
     fixture.detectChanges();
 
+    expect(submitEvent.defaultPrevented).toBe(true);
     expect(fixture.nativeElement.textContent).toContain('Username is required');
     expect(fixture.nativeElement.textContent).toContain('Password is required');
+    httpTesting.expectNone('http://localhost:8080/users');
 
     component.model.update((model) => ({ ...model, password: 'short' }));
     fixture.detectChanges();
@@ -147,5 +151,67 @@ describe('AddUserSlideIn', () => {
     (fixture.nativeElement.querySelector('.slide-in-header button') as HTMLButtonElement).click();
 
     expect(closeSlideInSpy).toHaveBeenCalledOnce();
+  });
+
+  it('should populate edit mode and update without sending a password', () => {
+    const user: User = {
+      id: 7,
+      username: 'existing-user',
+      email: 'existing@example.com',
+      phoneNumber: '123',
+      address: {
+        street: 'Old St',
+        houseNumber: '1',
+        city: 'Old City',
+        zipCode: '1',
+        country: 'Old',
+      },
+      roles: ['ROLE_USER'],
+    };
+    fixture.componentRef.setInput('selectedUser', user);
+    fixture.detectChanges();
+
+    expect(component.model().username).toBe('existing-user');
+    expect(fixture.nativeElement.querySelectorAll('input').length).toBe(8);
+    expect(fixture.nativeElement.textContent).toContain('Edit user');
+    expect(fixture.nativeElement.textContent).toContain('Update');
+
+    component.model.update((model) => ({ ...model, username: 'updated-user' }));
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelector('.slide-in-footer button:last-child') as HTMLButtonElement
+    ).click();
+
+    const request = httpTesting.expectOne('http://localhost:8080/users/7');
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body).toEqual({
+      username: 'updated-user',
+      email: 'existing@example.com',
+      phoneNumber: '123',
+      address: user.address,
+    });
+    expect(request.request.body.password).toBeUndefined();
+    request.flush({});
+  });
+
+  it('should keep edit mode open and re-enable submission after a failed update', () => {
+    fixture.componentRef.setInput('selectedUser', {
+      id: 7,
+      username: 'existing-user',
+      email: '',
+      phoneNumber: '',
+      address: null,
+      roles: [],
+    } satisfies User);
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelector('.slide-in-footer button:last-child') as HTMLButtonElement
+    ).click();
+
+    const request = httpTesting.expectOne('http://localhost:8080/users/7');
+    request.flush({ message: 'Update failed' }, { status: 400, statusText: 'Bad Request' });
+
+    expect(component.isSubmitting()).toBe(false);
+    expect(fixture.nativeElement.querySelector('app-slide-in-base')).toBeTruthy();
   });
 });
