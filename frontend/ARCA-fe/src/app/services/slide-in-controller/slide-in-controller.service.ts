@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,13 @@ import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 export class SlideInControllerService {
   private _overlay = inject(Overlay);
   private _overlayRef?: OverlayRef;
+  private _slideInSuccess = new Subject<void>();
+
+  public readonly slideInSuccess$ = this._slideInSuccess.asObservable();
+
+  public notifySlideInSuccess() {
+    this._slideInSuccess.next();
+  }
 
   public openSlideIn(component: ComponentType<unknown>) {
     this.closeSlideIn();

@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { UserManagement } from './user-management';
+import { SlideInControllerService } from '../../services/slide-in-controller/slide-in-controller.service';
 
 describe('UserManagement', () => {
   let component: UserManagement;
@@ -24,5 +25,13 @@ describe('UserManagement', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should reload users after a successful add-user notification', () => {
+    TestBed.inject(SlideInControllerService).notifySlideInSuccess();
+
+    const request = httpTesting.expectOne('http://localhost:8080/users');
+    expect(request.request.method).toBe('GET');
+    request.flush([]);
   });
 });

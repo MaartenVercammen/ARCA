@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -28,4 +27,9 @@ public class LoginInfo {
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
+
+    public LoginInfo(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

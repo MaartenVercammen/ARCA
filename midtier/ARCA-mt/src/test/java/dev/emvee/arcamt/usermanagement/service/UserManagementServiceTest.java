@@ -101,5 +101,6 @@ class UserManagementServiceTest {
         assertThat(userCaptor.getValue().getId()).isEqualTo(42L);
         assertThat(userCaptor.getValue().getUsername()).isEqualTo("newuser");
         assertThat(userCaptor.getValue().getEmail()).isEqualTo("test@example.com");
+        assertThat(userCaptor.getValue().getAddress().getId()).isNull();
     }
 }

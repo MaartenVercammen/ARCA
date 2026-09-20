@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Injector } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   MatCell,
@@ -43,6 +43,7 @@ import { AddUserSlideIn } from './slide-in/add-user-slide-in/add-user-slide-in';
 export class UserManagement {
   private _api = inject(ApiConnector);
   private _slideInController = inject(SlideInControllerService);
+  private _injector = inject(Injector);
 
   public users = toSignal(this._api.get<User[]>('/users'), { initialValue: [] });
 
@@ -50,8 +51,15 @@ export class UserManagement {
 
   protected readonly AddressPipe = AddressPipe;
 
+  constructor() {
+    this._slideInController.slideInSuccess$.subscribe(() => this.retryFetch());
+  }
+
   protected retryFetch() {
-    this.users = toSignal(this._api.get<User[]>('/users'), { initialValue: [] });
+    this.users = toSignal(this._api.get<User[]>('/users'), {
+      initialValue: [],
+      injector: this._injector,
+    });
   }
 
   protected openAddUserSlideIn() {

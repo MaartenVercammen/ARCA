@@ -49,13 +49,12 @@ public class UserManagementService {
     @Transactional
     public UserDto createUser(@Valid CreateUserRequest request) {
         String hashedPassword = hashService.hash(request.password());
-        LoginInfo loginInfo = new LoginInfo(null, request.username(), hashedPassword);
+        LoginInfo loginInfo = new LoginInfo(request.username(), hashedPassword);
         LoginInfo savedLoginInfo = loginRepository.save(loginInfo);
 
         Address address = null;
         if (request.address() != null) {
             address = new Address(
-                    null,
                     request.address().street(),
                     request.address().houseNumber(),
                     request.address().city(),

@@ -1,3 +1,62 @@
 <app-slide-in-base title="Add user">
-  <p>Add user content</p>
+  <form id="add-user-form" (submit)="onSubmit()" class="user-form">
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput type="text" autocomplete="username" [formField]="form.username"/>
+      @if (isVisible(form.username) && hasError(form.username, 'required')) {
+        <mat-error>Username is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input matInput type="password" autocomplete="new-password" [formField]="form.password"/>
+      @if (isVisible(form.password) && hasError(form.password, 'required')) {
+        <mat-error>Password is required</mat-error>
+      }
+      @if (isVisible(form.password) && hasError(form.password, 'minLength')) {
+        <mat-error>Password must be at least 8 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" autocomplete="email" [formField]="form.email"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Phone number</mat-label>
+      <input matInput type="tel" autocomplete="tel" [formField]="form.phoneNumber"/>
+    </mat-form-field>
+
+    <fieldset>
+      <legend>Address (optional)</legend>
+      <mat-form-field>
+        <mat-label>Street</mat-label>
+        <input matInput type="text" [formField]="form.address.street"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>House number</mat-label>
+        <input matInput type="text" [formField]="form.address.houseNumber"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>City</mat-label>
+        <input matInput type="text" [formField]="form.address.city"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>ZIP code</mat-label>
+        <input matInput type="text" [formField]="form.address.zipCode"/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Country</mat-label>
+        <input matInput type="text" [formField]="form.address.country"/>
+      </mat-form-field>
+    </fieldset>
+  </form>
+  <div slideInFooter class="form-actions">
+    <button matButton type="button" (click)="onClose()">Cancel</button>
+    <button matButton="filled" type="submit" form="add-user-form" [disabled]="form().invalid() || isSubmitting()">
+      {{ isSubmitting() ? 'Creating...' : 'Create' }}
+    </button>
+  </div>
 </app-slide-in-base>

@@ -29,4 +29,12 @@ public class Address {
     private String zipCode;
     private String country;
 
+    public Address(String street, String houseNumber, String city, String zipCode, String country) {
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
+
 }
