@@ -6,6 +6,6 @@ import { Address } from '../interfaces/user-management.interface';
 })
 export class AddressPipe implements PipeTransform {
   transform(address: Address): string {
-    return `${address.street} ${address.houseNumber}, ${address.zipCode} ${address.city}, ${address.country}`;
+    return `${address.street ?? ''} ${address.houseNumber ?? ''}\n ${address.zipCode ?? ''} ${address.city ?? ''}\n ${address.country ?? ''}`;
   }
 }
