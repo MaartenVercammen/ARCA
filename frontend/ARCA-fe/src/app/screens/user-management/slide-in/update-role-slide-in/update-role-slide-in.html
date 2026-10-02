@@ -1,0 +1,9 @@
+<app-slide-in-base title="Update Roles">
+  <div class="container">
+    @for (role of activeUsersRoles(); track $index) {
+      <mat-checkbox [checked]="activeRoles().includes(role)">
+        <p>{{ role }}</p>
+      </mat-checkbox>
+    }
+  </div>
+</app-slide-in-base>

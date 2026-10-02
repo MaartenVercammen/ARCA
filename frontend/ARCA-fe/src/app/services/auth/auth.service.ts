@@ -19,8 +19,6 @@ export class AuthService {
   private _error = signal<string | null>(null);
 
   public User = computed(() => this._user());
-  public isLoading = this._loading.asReadonly();
-  public errorMessage = this._error.asReadonly();
 
   public async login(username: string, password: string): Promise<boolean> {
     this._loading.set(true);
@@ -28,10 +26,10 @@ export class AuthService {
 
     try {
       const response = await firstValueFrom(
-        this._api.post<{ username: string; password: string }, userDto>(
-          '/authentication/login',
-          { username, password },
-        ),
+        this._api.post<{ username: string; password: string }, userDto>('/authentication/login', {
+          username,
+          password,
+        }),
       );
       this._user.set(response.username);
       sessionStorage.setItem('accessToken', response.accessToken);
@@ -116,5 +114,11 @@ export class AuthService {
 
   public getRefreshToken(): string | null {
     return sessionStorage.getItem('refreshToken');
+  }
+
+  public getRoles(): string[] {
+    const claims = this.getClaims();
+    if (!claims || !claims.roles) return [];
+    return claims.roles;
   }
 }

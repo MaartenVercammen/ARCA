@@ -18,6 +18,7 @@ import { EmptyStateComponent } from '../../components/empty-state.component/empt
 import { MatButton } from '@angular/material/button';
 import { SlideInControllerService } from '../../services/slide-in-controller/slide-in-controller.service';
 import { AddUserSlideIn } from './slide-in/add-user-slide-in/add-user-slide-in';
+import { UpdateRoleSlideIn } from './slide-in/update-role-slide-in/update-role-slide-in';
 
 @Component({
   selector: 'app-user-management',
@@ -85,6 +86,16 @@ export class UserManagement {
   protected openEditUserSlideIn(user: User) {
     this._slideInController
       .openSlideIn(AddUserSlideIn, { selectedUser: user })
+      .subscribe(({ reason }) => {
+        if (reason === 'success') {
+          this.retryFetch();
+        }
+      });
+  }
+
+  protected openEditRoles(user: User) {
+    this._slideInController
+      .openSlideIn(UpdateRoleSlideIn, { selectedUser: user })
       .subscribe(({ reason }) => {
         if (reason === 'success') {
           this.retryFetch();
