@@ -3,6 +3,7 @@ package dev.emvee.arcamt.usermanagement.controller;
 import dev.emvee.arcamt.core.security.JwtAuthenticationFilter;
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRolesRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.mock.UserMocks;
 import dev.emvee.arcamt.usermanagement.repository.model.Role;
@@ -34,6 +35,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -194,4 +196,32 @@ class UserManagementControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("Update user roles returns 200 OK for authenticated user")
+    void updateUserRoles_AuthenticatedUser_Returns_Ok() throws Exception {
+        UserDto updated = UserDto.builder().id(1L).username("updatedUser").roles(Set.of(Role.ROLE_USER)).build();
+        when(userManagementService.updateUserRoles(eq(1L), any(UpdateUserRolesRequest.class))).thenReturn(updated);
+
+        mockMvc.perform(put("/users/1/roles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"roles":["ROLE_USER"]}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.roles[0]", is("ROLE_USER")));
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("Update user roles returns 403 Forbidden for anonymous user")
+    void updateUserRoles_AnonymousUser_Returns_Forbidden() throws Exception {
+        mockMvc.perform(put("/users/1/roles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"roles":["ROLE_USER"]}
+                                """))
+                .andExpect(status().isForbidden());
+    }
 }

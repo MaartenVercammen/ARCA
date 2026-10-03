@@ -2,6 +2,7 @@ package dev.emvee.arcamt.usermanagement.controller;
 
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRolesRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.repository.model.Role;
 import dev.emvee.arcamt.usermanagement.service.UserManagementService;
@@ -50,5 +51,12 @@ public class UserManagementController {
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getRoles() {
         return ResponseEntity.ok(userManagementService.getRoles());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<UserDto> updateUserRoles(@PathVariable Long id,
+                                                   @RequestBody @Valid UpdateUserRolesRequest request) {
+        return ResponseEntity.ok(userManagementService.updateUserRoles(id, request));
     }
 }

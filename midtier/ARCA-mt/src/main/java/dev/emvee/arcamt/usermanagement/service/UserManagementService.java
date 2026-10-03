@@ -3,9 +3,11 @@ package dev.emvee.arcamt.usermanagement.service;
 import dev.emvee.arcamt.auth.repository.LoginRepository;
 import dev.emvee.arcamt.auth.repository.model.LoginInfo;
 import dev.emvee.arcamt.auth.service.HashService;
+import dev.emvee.arcamt.core.security.UserHolder;
 import dev.emvee.arcamt.usermanagement.dto.AddressDto;
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRolesRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.repository.UserRepository;
 import dev.emvee.arcamt.usermanagement.repository.model.Address;
@@ -13,10 +15,12 @@ import dev.emvee.arcamt.usermanagement.repository.model.Role;
 import dev.emvee.arcamt.usermanagement.repository.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -113,5 +117,25 @@ public class UserManagementService {
 
     public List<Role> getRoles() {
         return List.of(Role.values());
+    }
+
+    @Transactional
+    public UserDto updateUserRoles(Long id, @Valid UpdateUserRolesRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+
+        if (request != null && request.roles() != null && !request.roles().isEmpty()) {
+            boolean isAdmin = UserHolder.hasRole(Role.ROLE_ADMIN.name());
+            for (Role role : request.roles()) {
+                if (!isAdmin && !UserHolder.hasRole(role.name())) {
+                    throw new AccessDeniedException("User is not authorized to assign role: " + role);
+                }
+            }
+            Set<Role> roles = user.getRoles() != null ? new HashSet<>(user.getRoles()) : new HashSet<>();
+            roles.addAll(request.roles());
+            user.setRoles(roles);
+        }
+
+        return toDto(userRepository.save(user));
     }
 }

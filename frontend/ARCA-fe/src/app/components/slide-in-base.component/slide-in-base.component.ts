@@ -11,7 +11,7 @@ import { SlideInControllerService } from '../../services/slide-in-controller/sli
   styleUrl: './slide-in-base.component.scss',
 })
 export class SlideInBaseComponent {
-  private _slideInController = inject(SlideInControllerService);
+  protected _slideInController = inject(SlideInControllerService);
 
   public title = input.required<string>();
 

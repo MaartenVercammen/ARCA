@@ -1,7 +1,9 @@
 <app-slide-in-base title="Update Roles">
-  <form class="container">
+  <form class="container" id="roles-form" (submit)="onSubmit($event)">
     @for (role of activeUsersRoles(); track $index) {
-      <mat-checkbox [checked]="activeRoles().includes(role)">
+      <mat-checkbox
+        [checked]="isRoleSelected(role)"
+        (change)="onRoleChange(role, $event.checked)">
         <p>{{ role }}</p>
       </mat-checkbox>
     }
@@ -9,8 +11,9 @@
 
   <div slideInFooter class="form-actions">
     <button matButton type="button" (click)="onClose()">Cancel</button>
-    <button matButton="filled" type="submit">
+    <button matButton="filled" form="roles-form" type="submit" [disabled]="isSubmitting()">
       Save
     </button>
   </div>
+
 </app-slide-in-base>

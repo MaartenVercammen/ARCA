@@ -3,14 +3,18 @@ package dev.emvee.arcamt.usermanagement.service;
 import dev.emvee.arcamt.auth.repository.LoginRepository;
 import dev.emvee.arcamt.auth.repository.model.LoginInfo;
 import dev.emvee.arcamt.auth.service.HashService;
+import dev.emvee.arcamt.core.security.UserContext;
+import dev.emvee.arcamt.core.security.UserHolder;
 import dev.emvee.arcamt.usermanagement.dto.AddressDto;
 import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
 import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRolesRequest;
 import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.mock.UserMocks;
 import dev.emvee.arcamt.usermanagement.repository.UserRepository;
 import dev.emvee.arcamt.usermanagement.repository.model.Role;
 import dev.emvee.arcamt.usermanagement.repository.model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,13 +22,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -129,5 +137,112 @@ class UserManagementServiceTest {
         assertThat(loginInfo.getUsername()).isEqualTo("updateduser");
         assertThat(loginInfo.getPassword()).isEqualTo("stored-password");
         assertThat(user.getRoles()).containsExactly(Role.ROLE_ADMIN);
+    }
+
+    @AfterEach
+    void tearDown() {
+        UserHolder.clear();
+    }
+
+    @Test
+    @DisplayName("UpdateUserRoles throws IllegalArgumentException when user not found")
+    void UpdateUserRoles_UserNotFound_ThrowsIllegalArgumentException() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        UpdateUserRolesRequest request = UpdateUserRolesRequest.builder()
+                .roles(Set.of(Role.ROLE_EDITOR))
+                .build();
+
+        assertThatThrownBy(() -> userManagementService.updateUserRoles(99L, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("User not found: 99");
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("UpdateUserRoles succeeds when calling user is ADMIN")
+    void UpdateUserRoles_CallingUserIsAdmin_AddsRolesSuccessfully() {
+        UserHolder.set(UserContext.builder()
+                .userId(1L)
+                .username("admin")
+                .roles(List.of("ROLE_ADMIN"))
+                .build());
+
+        User user = User.builder()
+                .id(42L)
+                .username("targetUser")
+                .roles(new HashSet<>(Set.of(Role.ROLE_USER)))
+                .build();
+
+        UpdateUserRolesRequest request = UpdateUserRolesRequest.builder()
+                .roles(Set.of(Role.ROLE_EDITOR, Role.ROLE_ADMIN))
+                .build();
+
+        when(userRepository.findById(42L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userManagementService.updateUserRoles(42L, request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.roles()).containsExactlyInAnyOrder(Role.ROLE_USER, Role.ROLE_EDITOR, Role.ROLE_ADMIN);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("UpdateUserRoles succeeds when calling user has the requested role")
+    void UpdateUserRoles_CallingUserHasRole_AddsRolesSuccessfully() {
+        UserHolder.set(UserContext.builder()
+                .userId(1L)
+                .username("editor")
+                .roles(List.of("ROLE_EDITOR"))
+                .build());
+
+        User user = User.builder()
+                .id(42L)
+                .username("targetUser")
+                .roles(new HashSet<>(Set.of(Role.ROLE_USER)))
+                .build();
+
+        UpdateUserRolesRequest request = UpdateUserRolesRequest.builder()
+                .roles(Set.of(Role.ROLE_EDITOR))
+                .build();
+
+        when(userRepository.findById(42L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto result = userManagementService.updateUserRoles(42L, request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.roles()).containsExactlyInAnyOrder(Role.ROLE_USER, Role.ROLE_EDITOR);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("UpdateUserRoles throws AccessDeniedException when calling user is not admin and does not have the requested role")
+    void UpdateUserRoles_CallingUserLacksRole_ThrowsAccessDeniedException() {
+        UserHolder.set(UserContext.builder()
+                .userId(1L)
+                .username("regularUser")
+                .roles(List.of("ROLE_USER"))
+                .build());
+
+        User user = User.builder()
+                .id(42L)
+                .username("targetUser")
+                .roles(new HashSet<>(Set.of(Role.ROLE_USER)))
+                .build();
+
+        UpdateUserRolesRequest request = UpdateUserRolesRequest.builder()
+                .roles(Set.of(Role.ROLE_ADMIN))
+                .build();
+
+        when(userRepository.findById(42L)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> userManagementService.updateUserRoles(42L, request))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessageContaining("User is not authorized to assign role: ROLE_ADMIN");
+
+        verify(userRepository, never()).save(any(User.class));
     }
 }
