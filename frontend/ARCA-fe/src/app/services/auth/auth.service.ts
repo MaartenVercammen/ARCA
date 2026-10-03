@@ -20,6 +20,9 @@ export class AuthService {
 
   public User = computed(() => this._user());
 
+  public isLoading = this._loading.asReadonly();
+  public errorMessage = this._error.asReadonly();
+
   public async login(username: string, password: string): Promise<boolean> {
     this._loading.set(true);
     this._error.set(null);
@@ -120,5 +123,9 @@ export class AuthService {
     const claims = this.getClaims();
     if (!claims || !claims.roles) return [];
     return claims.roles;
+  }
+
+  public isAdmin(): boolean {
+    return this.hasRole('ROLE_ADMIN');
   }
 }

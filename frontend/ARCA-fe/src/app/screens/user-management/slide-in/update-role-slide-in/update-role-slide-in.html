@@ -1,9 +1,16 @@
 <app-slide-in-base title="Update Roles">
-  <div class="container">
+  <form class="container">
     @for (role of activeUsersRoles(); track $index) {
       <mat-checkbox [checked]="activeRoles().includes(role)">
         <p>{{ role }}</p>
       </mat-checkbox>
     }
+  </form>
+
+  <div slideInFooter class="form-actions">
+    <button matButton type="button" (click)="onClose()">Cancel</button>
+    <button matButton="filled" type="submit">
+      Save
+    </button>
   </div>
 </app-slide-in-base>

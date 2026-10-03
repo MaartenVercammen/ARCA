@@ -110,4 +110,8 @@ public class UserManagementService {
                 .roles(user.getRoles())
                 .build();
     }
+
+    public List<Role> getRoles() {
+        return List.of(Role.values());
+    }
 }
