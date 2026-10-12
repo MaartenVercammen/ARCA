@@ -1,8 +1,14 @@
-import {inject, Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {from, Observable, throwError} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
-import {AuthService} from '../services/auth/auth.service';
+import { inject, Injectable } from '@angular/core';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { AuthService } from '../services/auth/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -21,15 +27,15 @@ export class AuthInterceptor implements HttpInterceptor {
           return this.handle401Error(request, next);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   private addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -47,7 +53,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((err) => {
         this._authService.logout();
         return throwError(() => err);
-      })
+      }),
     );
   }
 }

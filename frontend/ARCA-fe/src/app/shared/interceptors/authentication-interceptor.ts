@@ -1,15 +1,15 @@
-import {HttpErrorResponse, HttpInterceptorFn, HttpRequest} from '@angular/common/http';
-import {inject} from '@angular/core';
-import {AuthService} from '../../services/auth/auth.service';
-import {catchError, from, switchMap, throwError} from 'rxjs';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from '../../services/auth/auth.service';
+import { catchError, from, switchMap, throwError } from 'rxjs';
 
 function addToken(req: HttpRequest<unknown>, token: string | null): HttpRequest<unknown> {
   if (!token) return req;
 
   return req.clone({
     setHeaders: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 }
 
@@ -29,11 +29,11 @@ export const authenticationInterceptor: HttpInterceptorFn = (req, next) => {
             }
 
             return throwError(() => error);
-          })
+          }),
         );
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };
