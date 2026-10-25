@@ -1,0 +1,155 @@
+lockfile_version: '1'
+apm_version: 0.35.0
+dependencies:
+  - repo_url: maartenvercammen/own-skills
+    materialization_repo_url: MaartenVercammen/own-skills
+    name: own-skills
+    host: github.com
+    resolved_commit: 4317e24cf718a9d9a13fb55dd21787a02f6b464d
+    version: 1.0.0
+    package_type: apm_package
+    deployed_files:
+      - .agents/skills/feature-factory
+      - .agents/skills/feature-factory/SKILL.md
+      - .agents/skills/grilling
+      - .agents/skills/grilling/SKILL.md
+      - .agents/skills/grilling/agents/openai.yaml
+      - .github/agents/implementation.agent.md
+      - .github/agents/planning.agent.md
+      - .github/agents/retrospective.agent.md
+      - .github/agents/scaffolding.agent.md
+      - .github/agents/specification-reviewer.agent.md
+      - .github/agents/specification.agent.md
+      - .github/agents/standards-reviewer.agent.md
+      - .github/agents/test-author.agent.md
+    deployed_file_hashes:
+      .agents/skills/feature-factory/SKILL.md: sha256:0280f0da81590309e67f5050c41ad11df6156baffccddb7210cb41d5a0119102
+      .agents/skills/grilling/SKILL.md: sha256:10ff989e7498b23b5acb49d5048f11dcd906757d2f79c5cdf8a00001381296f2
+      .agents/skills/grilling/agents/openai.yaml: sha256:1411d7df7d99b7e621a1ff8283c8133cc2464be63d064e52d8ce169c6800ee9b
+      .github/agents/implementation.agent.md: sha256:749a98c8ebd31411d50ffa4244ba45b11ccb9d7a1c43a85beff66d38c2b1c161
+      .github/agents/planning.agent.md: sha256:495e06b1ef0b28cb0214f6bb7f3686c3a71774e9fb238c134370360512212518
+      .github/agents/retrospective.agent.md: sha256:5428b07b3c91076c21b58020b1769573afa6776cdb7882e792dfcbc6920a5181
+      .github/agents/scaffolding.agent.md: sha256:aa37623ed9a2905c2b607fe708896d86ae69dce9325613bd50e64b3d85792b0b
+      .github/agents/specification-reviewer.agent.md: sha256:71d262fb374a7546bf560806d8710ef7f202ffd5a647c2eb3ea12e5821d9b20a
+      .github/agents/specification.agent.md: sha256:3789ddf0d5e292dc6d1932d0bd523167f477a33f40ad1a6119534d1ab081ecd9
+      .github/agents/standards-reviewer.agent.md: sha256:6c659ad32f82e7137718e9c5e19eebb6adafc9a814bff7c606178f0b869ca19e
+      .github/agents/test-author.agent.md: sha256:90d7cd72b816b2143c330b4cb7116744f89b15c86c7f9a6f4f91ab03ae3c3ae9
+    content_hash: sha256:0c106afe7feadea4b5d6e4204913be90e628b990d8a7eea5eb33c172cfa66d96
+deployments:
+  - kind: project-relative
+    target: copilot
+    value: .agents/skills/feature-factory
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: null
+  - kind: project-relative
+    target: copilot
+    value: .agents/skills/feature-factory/SKILL.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:0280f0da81590309e67f5050c41ad11df6156baffccddb7210cb41d5a0119102
+  - kind: project-relative
+    target: copilot
+    value: .agents/skills/grilling
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: null
+  - kind: project-relative
+    target: copilot
+    value: .agents/skills/grilling/SKILL.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:10ff989e7498b23b5acb49d5048f11dcd906757d2f79c5cdf8a00001381296f2
+  - kind: project-relative
+    target: copilot
+    value: .agents/skills/grilling/agents/openai.yaml
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:1411d7df7d99b7e621a1ff8283c8133cc2464be63d064e52d8ce169c6800ee9b
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/implementation.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:749a98c8ebd31411d50ffa4244ba45b11ccb9d7a1c43a85beff66d38c2b1c161
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/planning.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:495e06b1ef0b28cb0214f6bb7f3686c3a71774e9fb238c134370360512212518
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/retrospective.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:5428b07b3c91076c21b58020b1769573afa6776cdb7882e792dfcbc6920a5181
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/scaffolding.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:aa37623ed9a2905c2b607fe708896d86ae69dce9325613bd50e64b3d85792b0b
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/specification-reviewer.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:71d262fb374a7546bf560806d8710ef7f202ffd5a647c2eb3ea12e5821d9b20a
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/specification.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:3789ddf0d5e292dc6d1932d0bd523167f477a33f40ad1a6119534d1ab081ecd9
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/standards-reviewer.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:6c659ad32f82e7137718e9c5e19eebb6adafc9a814bff7c606178f0b869ca19e
+  - kind: project-relative
+    target: copilot
+    value: .github/agents/test-author.agent.md
+    runtime: null
+    scope: project
+    owners:
+      - maartenvercammen/own-skills
+    active_owner: maartenvercammen/own-skills
+    content_hash: sha256:90d7cd72b816b2143c330b4cb7116744f89b15c86c7f9a6f4f91ab03ae3c3ae9
