@@ -8,3 +8,9 @@
 /e2e/node_modules/
 
 **/*.db
+
+# APM dependencies
+apm_modules/
+.agents
+.apm-local
+.github/agents
