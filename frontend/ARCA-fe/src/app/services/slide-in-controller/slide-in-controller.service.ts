@@ -3,7 +3,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 import { Observable, Subject } from 'rxjs';
 
-export type SlideInCloseReason = 'success' | 'close';
+export type SlideInCloseReason = 'success' | 'manual' | 'close';
 export type SlideInCloseResult = { reason: SlideInCloseReason };
 
 @Injectable({
@@ -14,7 +14,7 @@ export class SlideInControllerService {
   private _overlayRef?: OverlayRef;
   private _slideInSuccess = new Subject<void>();
   private _slideInLifecycle?: Subject<SlideInCloseResult>;
-  private _slideInCloseReason: SlideInCloseReason = 'close';
+  private _slideInCloseReason: SlideInCloseReason = 'manual';
 
   public readonly slideInSuccess$ = this._slideInSuccess.asObservable();
 
@@ -30,7 +30,7 @@ export class SlideInControllerService {
     this.closeSlideIn();
 
     this._slideInLifecycle = new Subject<SlideInCloseResult>();
-    this._slideInCloseReason = 'close';
+    this._slideInCloseReason = 'manual';
 
     this._overlayRef = this._overlay.create({
       width: '30%',
@@ -55,7 +55,7 @@ export class SlideInControllerService {
 
     this._overlayRef = undefined;
     this._slideInLifecycle = undefined;
-    this._slideInCloseReason = 'close';
+    this._slideInCloseReason = 'manual';
 
     overlayRef?.dispose();
     lifecycle?.next(closeResult);

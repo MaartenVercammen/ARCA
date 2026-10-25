@@ -132,7 +132,7 @@ class UserManagementControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userName", is("newUser")));
+                .andExpect(jsonPath("$.username", is("newUser")));
     }
 
     @Test
