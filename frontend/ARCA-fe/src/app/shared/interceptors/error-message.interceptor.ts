@@ -20,8 +20,7 @@ export class ErrorMessageInterceptor implements HttpInterceptor {
         if (error instanceof HttpErrorResponse) {
           this._systemMessageService.show({
             message: error.error.message,
-            type: 'success',
-            duration: 5000,
+            type: 'error',
           });
         }
         return throwError(() => error);

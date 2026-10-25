@@ -1,7 +1,12 @@
 package dev.emvee.arcamt.usermanagement.controller;
 
 import dev.emvee.arcamt.core.security.JwtAuthenticationFilter;
+import dev.emvee.arcamt.usermanagement.dto.CreateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRequest;
+import dev.emvee.arcamt.usermanagement.dto.UpdateUserRolesRequest;
+import dev.emvee.arcamt.usermanagement.dto.UserDto;
 import dev.emvee.arcamt.usermanagement.mock.UserMocks;
+import dev.emvee.arcamt.usermanagement.repository.model.Role;
 import dev.emvee.arcamt.usermanagement.service.UserManagementService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -24,9 +30,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Set;
+
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,4 +111,117 @@ class UserManagementControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("Create user returns 201 Created for ADMIN")
+    void createUser_AdminUser_Returns_Created() throws Exception {
+        UserDto created = UserDto.builder()
+                .username("newUser")
+                .roles(Set.of(Role.ROLE_USER))
+                .build();
+        when(userManagementService.createUser(any(CreateUserRequest.class))).thenReturn(created);
+
+        String payload = """
+                {
+                    "username": "newUser",
+                    "password": "Password123"
+                }
+                """;
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userName", is("newUser")));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("Create user returns 403 Forbidden for USER role")
+    void createUser_NonAdminUser_Returns_Forbidden() throws Exception {
+        String payload = """
+                {
+                    "username": "newUser",
+                    "password": "Password123"
+                }
+                """;
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("Create user returns 403 Forbidden for anonymous user")
+    void createUser_AnonymousUser_Returns_Forbidden() throws Exception {
+        String payload = """
+                {
+                    "username": "newUser",
+                    "password": "Password123"
+                }
+                """;
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    @DisplayName("Update user returns 200 OK for ADMIN")
+    void updateUser_AdminUser_Returns_Ok() throws Exception {
+        UserDto updated = UserDto.builder().id(1L).username("updatedUser").build();
+        when(userManagementService.updateUser(any(Long.class), any(UpdateUserRequest.class))).thenReturn(updated);
+
+        mockMvc.perform(put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"updatedUser","email":"updated@example.com"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.username", is("updatedUser")));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("Update user returns 403 Forbidden for USER role")
+    void updateUser_NonAdminUser_Returns_Forbidden() throws Exception {
+        mockMvc.perform(put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"updatedUser\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    @DisplayName("Update user roles returns 200 OK for authenticated user")
+    void updateUserRoles_AuthenticatedUser_Returns_Ok() throws Exception {
+        UserDto updated = UserDto.builder().id(1L).username("updatedUser").roles(Set.of(Role.ROLE_USER)).build();
+        when(userManagementService.updateUserRoles(eq(1L), any(UpdateUserRolesRequest.class))).thenReturn(updated);
+
+        mockMvc.perform(put("/users/1/roles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"roles":["ROLE_USER"]}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.roles[0]", is("ROLE_USER")));
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("Update user roles returns 403 Forbidden for anonymous user")
+    void updateUserRoles_AnonymousUser_Returns_Forbidden() throws Exception {
+        mockMvc.perform(put("/users/1/roles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"roles":["ROLE_USER"]}
+                                """))
+                .andExpect(status().isForbidden());
+    }
 }

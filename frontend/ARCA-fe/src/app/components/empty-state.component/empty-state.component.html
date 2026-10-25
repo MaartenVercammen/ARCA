@@ -1,0 +1,15 @@
+<mat-card class="empty-state-card" appearance="outlined">
+  <mat-card-content class="empty-state-content">
+    <div class="empty-state-icon" aria-hidden="true">
+      <mat-icon>search_off</mat-icon>
+    </div>
+
+    <h2>No data found</h2>
+    <p>We couldn't find anything to display right now.</p>
+
+    <button matButton="filled" type="button" (click)="retry.emit()">
+      <mat-icon>refresh</mat-icon>
+      Try again
+    </button>
+  </mat-card-content>
+</mat-card>

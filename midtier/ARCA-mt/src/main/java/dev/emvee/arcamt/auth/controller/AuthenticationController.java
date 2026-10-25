@@ -23,11 +23,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
-    @PostMapping("/signup")
-    public String signup(@RequestBody @Valid LoginRequest loginRequest) {
-       return authenticationService.signup(loginRequest) + " has been created";
-    }
-
     @PostMapping("/refresh")
     public ResponseEntity<UserDto> refreshToken(@RequestBody String refreshToken) {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));

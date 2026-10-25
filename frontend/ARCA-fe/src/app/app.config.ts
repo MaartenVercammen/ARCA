@@ -6,6 +6,7 @@ import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorMessageInterceptor } from './shared/interceptors/error-message.interceptor';
+import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,5 +29,6 @@ export const appConfig: ApplicationConfig = {
       useClass: ErrorMessageInterceptor,
       multi: true,
     },
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
   ],
 };

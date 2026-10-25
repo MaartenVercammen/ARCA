@@ -31,7 +31,7 @@ export class Login {
   protected loginService = inject(AuthService);
   private _router = inject(Router);
   form = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
   protected hidePassword = signal(true);

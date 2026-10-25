@@ -3,6 +3,9 @@ spring:
     name: ARCA-mt
 
   datasource:
+    # If an existing file database predates the identity mapping, back it up and
+    # recreate db.mv.db before starting the application; ddl-auto does not
+    # reliably convert an existing primary-key column into an identity column.
     url: jdbc:h2:file:./db;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     username: sa
