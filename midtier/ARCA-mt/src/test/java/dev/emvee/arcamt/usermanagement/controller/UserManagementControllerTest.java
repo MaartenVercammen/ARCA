@@ -17,9 +17,12 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -68,9 +71,10 @@ class UserManagementControllerTest {
      * instead of a 403 response. This advice replicates that translation for the purposes of this test.
      */
     @RestControllerAdvice
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     static class AccessDeniedTestExceptionHandler {
 
-        @ExceptionHandler(AccessDeniedException.class)
+        @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
         @ResponseStatus(HttpStatus.FORBIDDEN)
         void handleAccessDenied() {
         }
@@ -132,7 +136,7 @@ class UserManagementControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.userName", is("newUser")));
+                .andExpect(jsonPath("$.username", is("newUser")));
     }
 
     @Test

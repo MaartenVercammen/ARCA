@@ -60,6 +60,15 @@ describe('UpdateRoleSlideIn', () => {
       id: 1,
       username: 'testuser',
       roles: ['ROLE_USER'],
+      email: 'test@test.com',
+      phoneNumber: '0123456789',
+      address: {
+        street: 'street',
+        houseNumber: '1',
+        city: 'city',
+        zipCode: '1234',
+        country: 'Belgium',
+      },
     };
     fixture.componentRef.setInput('selectedUser', user);
     fixture.detectChanges();
@@ -91,6 +100,15 @@ describe('UpdateRoleSlideIn', () => {
       id: 42,
       username: 'alice',
       roles: ['ROLE_USER'],
+      email: 'test@test.com',
+      phoneNumber: '0123456789',
+      address: {
+        street: 'street',
+        houseNumber: '1',
+        city: 'city',
+        zipCode: '1234',
+        country: 'Belgium',
+      },
     };
     fixture.componentRef.setInput('selectedUser', user);
     fixture.detectChanges();
