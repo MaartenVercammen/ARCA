@@ -36,3 +36,18 @@ body {
   margin: 0;
   height: 100%;
 }
+
+.system-message-panel {
+  --mat-snack-bar-container-color: transparent;
+  --mat-snack-bar-container-elevation-shadow: none;
+  --mat-snack-bar-container-shape: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.system-message-panel .mdc-snackbar__surface {
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
