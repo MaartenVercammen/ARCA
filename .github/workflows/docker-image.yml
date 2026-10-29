@@ -32,6 +32,9 @@ jobs:
       - name: Test frontend
         working-directory: frontend/ARCA-fe
         run: yarn test --watch=false
+      - name: BDD tests frontend
+        working-directory: frontend/ARCA-fe
+        run: yarn test:bdd
 
   midtier:
     runs-on: ubuntu-latest
